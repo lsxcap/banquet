@@ -336,6 +336,8 @@ async function loadRemote() {
         mainTitle: data.mainTitle || '我们的记账',
       };
     }
+    // 自动修正旧标题
+    if (state.mainTitle === '69岁生日宴') state.mainTitle = '我们的记账';
     normalizeTasks();
     setSyncDot('ok');
   } catch(e) {
