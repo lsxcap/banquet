@@ -117,6 +117,28 @@ input[type=number] {
 .add-task-inline:hover{color:#BA7517}
 .person-del{background:none;border:none;color:#ccc;cursor:pointer;padding:2px;margin-left:4px;display:inline-flex;align-items:center}
 .person-del:hover{color:#E24B4A}
+/* 强化版添加负责人按钮 */
+.add-task-btn.primary-action{
+  background:#FEFAF5;
+  border:0.5px solid #BA7517;
+  color:#854F0B;
+  font-weight:500;
+}
+.add-task-btn.primary-action:hover{
+  background:#FAC775;
+}
+/* 弱化版重置按钮 */
+.add-task-btn.secondary-action{
+  border:none;
+  color:#bbb;
+  font-size:12px;
+  padding:6px 0;
+  margin-top:40px;
+}
+.add-task-btn.secondary-action:hover{
+  color:#aaa;
+  background:transparent;
+}
 .add-task-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:9px;border-radius:10px;border:0.5px dashed #d0c8be;background:transparent;color:#888;font-size:13px;cursor:pointer;margin:0 0 12px;font-family:inherit}
 .add-task-btn:hover{border-color:#BA7517;color:#854F0B;background:#FEFAF5}
 .ledger-row{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:0.5px solid #f5f0ea;font-size:13px}
@@ -155,7 +177,7 @@ textarea{resize:vertical;min-height:80px;width:100%}
     <div class="header-top">
       <div class="h-icon">🎂</div>
       <div>
-        <div class="h-title" id="main-title" ondblclick="editMainTitle()">69岁生日宴</div>
+        <div class="h-title" id="main-title" ondblclick="editMainTitle()">我们的记账</div>
         <div class="h-sub" id="h-sub">2026年5月30日 · 共30人</div>
       </div>
       <div class="sync-dot" id="sync-dot" title="同步状态"></div>
@@ -183,8 +205,8 @@ textarea{resize:vertical;min-height:80px;width:100%}
     </div>
     <div style="padding:0 16px">
       <div id="overview-persons"></div>
-      <button class="add-task-btn" onclick="addPerson()"><i class="ti ti-plus"></i> 添加负责人</button>
-      <button class="add-task-btn" style="border-color:#E24B4A;color:#A32D2D;margin-top:4px" onclick="resetData()"><i class="ti ti-refresh"></i> 重置为默认任务列表</button>
+      <button class="add-task-btn primary-action" onclick="addPerson()"><i class="ti ti-plus"></i> 添加负责人</button>
+      <button class="add-task-btn secondary-action" onclick="resetData()"><i class="ti ti-refresh"></i> 重置为默认任务列表</button>
     </div>
   </div>
 
@@ -282,7 +304,7 @@ let state = {
   eventDate: '2026-05-30',
   eventDesc: '椿萱同欢・晴光入宴',
   eventName: '寿宴',
-  mainTitle: '69岁生日宴',
+  mainTitle: '我们的记账',
 };
 
 let saveTimer = null;
@@ -311,7 +333,7 @@ async function loadRemote() {
         eventDate: data.eventDate || '2026-05-30',
         eventDesc: data.eventDesc || '椿萱同欢・晴光入宴',
         eventName: data.eventName || '寿宴',
-        mainTitle: data.mainTitle || '69岁生日宴',
+        mainTitle: data.mainTitle || '我们的记账',
       };
     }
     normalizeTasks();
