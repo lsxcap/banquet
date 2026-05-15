@@ -26,12 +26,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans G
 .cd-num{font-size:56px;font-weight:700;color:#633806;line-height:1;letter-spacing:-2px}
 .cd-label{font-size:13px;color:#854F0B;margin-top:6px}
 .cd-date{font-size:12px;color:#BA7517;margin-top:2px}
-.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:12px 16px}
+.editable{display:inline-block;border-bottom:1px dashed transparent;cursor:pointer;transition:border-color .2s}
+.editable:hover{border-bottom-color:#BA7517}
+.inline-edit-input{border:0.5px solid #BA7517;border-radius:4px;padding:2px 4px;font:inherit;color:inherit;background:#fff;outline:none;width:auto;min-width:80px}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px 16px}
 .stat{background:#fff;border-radius:10px;padding:10px 12px;border:0.5px solid #e8e0d8;text-align:center}
 .stat-l{font-size:11px;color:#888;margin-bottom:3px}
 .stat-v{font-size:20px;font-weight:600;color:#1a1a1a}
 .stat-u{font-size:10px;color:#888}
-.card{background:#fff;border-radius:14px;border:0.5px solid #e8e0d8;padding:14px 16px;margin:0 16px 12px}
+.card{background:#fff;border-radius:14px;border:0.5px solid #e8e0d8;padding:14px 16px;margin:0 16px 12px;position:relative}
 .card-title{font-size:12px;font-weight:500;color:#aaa;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
 .person-tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:500}
 .tag-妥妥{background:#E1F5EE;color:#085041}
@@ -45,14 +48,47 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans G
 .chk{width:20px;height:20px;border-radius:6px;border:1.5px solid #d0c8be;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .15s;color:#fff}
 .chk.done{background:#1D9E75;border-color:#1D9E75}
 .task-body{flex:1;min-width:0}
-.task-title{font-size:14px;color:#1a1a1a;line-height:1.4}
+.task-title{font-size:14px;color:#1a1a1a;line-height:1.4;cursor:pointer}
 .task-title.done{text-decoration:line-through;color:#bbb}
-.note-toggle{font-size:11px;color:#BA7517;cursor:pointer;margin-top:4px;display:inline-block;user-select:none}
+.task-meta{display:flex;align-items:center;gap:6px;margin-top:4px;flex-wrap:wrap}
+.task-cost{display:flex;align-items:center;gap:2px;font-size:12px}
+.task-cost input{width:80px;padding:3px 6px;border:0.5px solid #d8d0c8;border-radius:6px;font-size:12px;color:#1a1a1a;background:#fff;outline:none;text-align:right}
+.task-cost input:focus{border-color:#BA7517}
+.task-cost span{color:#888;font-size:11px}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}
+.clear-cost{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  background:#f0ebe3;
+  color:#888;
+  font-size:10px;
+  cursor:pointer;
+  margin-left:2px;
+  user-select:none;
+  transition:background .2s;
+}
+.clear-cost:hover{background:#E24B4A;color:#fff}
+.note-toggle{font-size:11px;color:#BA7517;cursor:pointer;display:inline-flex;align-items:center;gap:2px;user-select:none;margin-left:4px}
 .task-note-input{width:100%;margin-top:5px;border:0.5px solid #e0d8d0;border-radius:7px;padding:5px 8px;font-size:12px;color:#666;font-family:inherit;background:#FFFCF8;resize:none;outline:none;display:none}
 .task-note-input.show{display:block}
 .task-note-input:focus{border-color:#BA7517}
 .del-btn{background:none;border:none;cursor:pointer;color:#ccc;padding:2px 4px;border-radius:4px;font-size:14px;flex-shrink:0}
 .del-btn:hover{color:#E24B4A;background:#FCEBEB}
+.add-task-inline{display:flex;align-items:center;gap:4px;color:#aaa;font-size:12px;cursor:pointer;padding:4px 0;user-select:none}
+.add-task-inline:hover{color:#BA7517}
+.person-del{background:none;border:none;color:#ccc;cursor:pointer;padding:2px;margin-left:4px;display:inline-flex;align-items:center}
+.person-del:hover{color:#E24B4A}
 .add-task-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:9px;border-radius:10px;border:0.5px dashed #d0c8be;background:transparent;color:#888;font-size:13px;cursor:pointer;margin:0 0 12px;font-family:inherit}
 .add-task-btn:hover{border-color:#BA7517;color:#854F0B;background:#FEFAF5}
 .ledger-row{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:0.5px solid #f5f0ea;font-size:13px}
@@ -70,18 +106,20 @@ textarea{resize:vertical;min-height:80px;width:100%}
 .guest-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:0.5px solid #f5f0ea;font-size:13px}
 .guest-row:last-child{border-bottom:none}
 .ledger-total{display:flex;justify-content:space-between;padding-top:10px;margin-top:6px;border-top:0.5px solid #e8e0d8;font-size:13px}
+.settlement-item{display:flex;align-items:center;gap:6px;padding:6px 0;font-size:13px}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:8px 18px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap}
 .toast.show{opacity:1}
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;align-items:flex-end;justify-content:center}
-.modal-bg.show{display:flex}
-.modal{background:#fff;border-radius:18px 18px 0 0;padding:20px;width:100%;max-width:640px}
-.modal-title{font-size:16px;font-weight:600;margin-bottom:14px}
-.modal label{font-size:12px;color:#888;display:block;margin-bottom:4px;margin-top:10px}
-.modal input,.modal select{width:100%}
-.modal-btns{display:flex;gap:8px;margin-top:16px}
-.modal-btns button{flex:1}
 .empty{color:#bbb;font-size:13px;text-align:center;padding:20px 0}
-.group-label{font-size:12px;color:#aaa;margin-bottom:4px;padding-left:2px}
+.group-label{font-size:12px;color:#aaa;margin-bottom:4px;padding-left:2px;cursor:pointer}
+/* 宾客加减按钮纯色风格 */
+.guest-btn{
+  width:22px;height:22px;border-radius:50%;
+  background:#f0ebe3;border:none;color:#666;
+  font-size:16px;cursor:pointer;display:inline-flex;
+  align-items:center;justify-content:center;
+  line-height:1;transition:background .2s;
+}
+.guest-btn:hover{background:#ddd6cc}
 </style>
 </head>
 <body>
@@ -91,13 +129,12 @@ textarea{resize:vertical;min-height:80px;width:100%}
       <div class="h-icon">🎂</div>
       <div>
         <div class="h-title">69岁生日宴</div>
-        <div class="h-sub">2026年5月30日 · 共30人</div>
+        <div class="h-sub" id="h-sub">2026年5月30日 · 共30人</div>
       </div>
       <div class="sync-dot" id="sync-dot" title="同步状态"></div>
     </div>
     <div class="tabs">
       <div class="tab active" onclick="switchTab('overview')"><i class="ti ti-layout-dashboard"></i> 概览</div>
-      <div class="tab" onclick="switchTab('tasks')"><i class="ti ti-checklist"></i> 任务</div>
       <div class="tab" onclick="switchTab('ledger')"><i class="ti ti-receipt"></i> 记账</div>
       <div class="tab" onclick="switchTab('guests')"><i class="ti ti-users"></i> 宾客</div>
     </div>
@@ -107,26 +144,20 @@ textarea{resize:vertical;min-height:80px;width:100%}
   <div class="section active" id="tab-overview">
     <div class="countdown">
       <div class="cd-num" id="cd-days">--</div>
-      <div class="cd-label">距离寿宴还有（天）</div>
-      <div class="cd-date">2026年5月30日 · 爸爸69岁生日</div>
+      <div class="cd-label">距离<span class="editable" id="cd-event-name" onclick="editEventName()">寿宴</span>还有（天）</div>
+      <div class="cd-date">
+        <span class="editable" id="cd-target-date" onclick="editTargetDate()">2026年5月30日</span>
+        <span class="editable" id="cd-desc" onclick="editEventDesc()">· 爸爸69岁生日</span>
+      </div>
     </div>
     <div class="stat-grid">
-      <div class="stat"><div class="stat-l">总任务</div><div class="stat-v" id="s-total">0</div></div>
-      <div class="stat"><div class="stat-l">已完成</div><div class="stat-v" id="s-done" style="color:#1D9E75">0</div></div>
+      <div class="stat"><div class="stat-l">已完成 / 总任务</div><div class="stat-v" id="s-progress">0 / 0</div></div>
       <div class="stat"><div class="stat-l">宾客</div><div class="stat-v" id="s-guests">0</div><div class="stat-u">人</div></div>
       <div class="stat"><div class="stat-l">已支出</div><div class="stat-v" id="s-spend">0</div><div class="stat-u">元</div></div>
     </div>
     <div style="padding:0 16px">
       <div id="overview-persons"></div>
-    </div>
-  </div>
-
-  <!-- 任务 -->
-  <div class="section" id="tab-tasks">
-    <div style="height:12px"></div>
-    <div id="task-groups"></div>
-    <div style="padding:0 16px">
-      <button class="add-task-btn" onclick="openAddTask()"><i class="ti ti-plus"></i> 添加任务</button>
+      <button class="add-task-btn" onclick="addPerson()"><i class="ti ti-plus"></i> 添加负责人</button>
       <button class="add-task-btn" style="border-color:#E24B4A;color:#A32D2D;margin-top:4px" onclick="resetData()"><i class="ti ti-refresh"></i> 重置为默认任务列表</button>
     </div>
   </div>
@@ -141,9 +172,7 @@ textarea{resize:vertical;min-height:80px;width:100%}
         <input type="number" id="l-amount" placeholder="金额(元)" style="width:100px" min="0">
       </div>
       <div class="form-row" style="margin-top:8px">
-        <select id="l-who" style="flex:1">
-          <option>妥妥</option><option>刘娟</option><option>星星</option><option>共同</option>
-        </select>
+        <select id="l-who" style="flex:1"></select>
         <select id="l-type" style="flex:1">
           <option value="out">支出</option><option value="in">收入/报销</option>
         </select>
@@ -157,6 +186,10 @@ textarea{resize:vertical;min-height:80px;width:100%}
         <span style="color:#888">总支出</span>
         <span id="l-total" style="font-weight:500;color:#A32D2D">0 元</span>
       </div>
+    </div>
+    <div class="card" id="settlement-card">
+      <div class="card-title">AA 结算</div>
+      <div id="settlement-content"><div class="empty">请先添加支出记录</div></div>
     </div>
   </div>
 
@@ -178,21 +211,6 @@ textarea{resize:vertical;min-height:80px;width:100%}
   </div>
 </div>
 
-<!-- 添加任务弹窗 -->
-<div class="modal-bg" id="modal-add-task">
-  <div class="modal">
-    <div class="modal-title">添加任务</div>
-    <label>任务名称</label>
-    <input type="text" id="at-title" placeholder="输入任务名称">
-    <label>所属分组</label>
-    <select id="at-group"></select>
-    <div class="modal-btns">
-      <button class="btn" onclick="closeModal()">取消</button>
-      <button class="btn btn-primary" onclick="confirmAddTask()"><i class="ti ti-check"></i> 确认添加</button>
-    </div>
-  </div>
-</div>
-
 <div class="toast" id="toast"></div>
 
 <script>
@@ -200,21 +218,17 @@ const FB_URL = 'https://banquet-c03ba-default-rtdb.asia-southeast1.firebasedatab
 
 const DEFAULT_TASKS = [
   {group:'酒店对接',owner:'妥妥',items:[
-    {id:'t1',title:'确认宴会日期（2026年5月30日）',done:false,note:''},
-    {id:'t2',title:'桌数、场地费和押金',done:false,note:''},
+    {id:'t1',title:'确认宴会日期（2026年5月30日）',done:false,note:'',cost:0,ledgerId:null},
+    {id:'t2',title:'桌数、场地费和押金',done:false,note:'',cost:0,ledgerId:null},
   ]},
   {group:'菜品与餐饮',owner:'刘娟',items:[
-    {id:'t5',title:'与酒店沟通寿宴特色菜选项',done:false,note:''},
-  ]},
-  {group:'寿宴蛋糕',owner:'刘娟',items:[
-    {id:'t14',title:'生日蛋糕：尺寸、口味、取货时间',done:false,note:''},
+    {id:'t5',title:'与酒店沟通寿宴特色菜选项',done:false,note:'',cost:0,ledgerId:null},
+    {id:'t14',title:'生日蛋糕：尺寸、口味、取货时间',done:false,note:'',cost:0,ledgerId:null},
   ]},
   {group:'采购与布置',owner:'星星',items:[
-    {id:'t8',title:'购买爸爸寿宴衣服',done:false,note:''},
-    {id:'t10',title:'准备生日宴布置物料',done:false,note:''},
-  ]},
-  {group:'寿包',owner:'星星',items:[
-    {id:'t11',title:'预定寿包（数量、口味确认）',done:false,note:''},
+    {id:'t8',title:'购买爸爸寿宴衣服',done:false,note:'',cost:0,ledgerId:null},
+    {id:'t10',title:'准备生日宴布置物料',done:false,note:'',cost:0,ledgerId:null},
+    {id:'t11',title:'预定寿包（数量、口味确认）',done:false,note:'',cost:0,ledgerId:null},
   ]},
 ];
 
@@ -230,26 +244,56 @@ const DEFAULT_GUESTS = [
   {name:'千和叔叔',num:2},
 ];
 
+const DEFAULT_PERSONS = [
+  {name:'妥妥', color:'#1D9E75'},
+  {name:'刘娟', color:'#7F77DD'},
+  {name:'星星', color:'#D4537E'},
+];
+
 let state = {
   tasks: JSON.parse(JSON.stringify(DEFAULT_TASKS)),
   ledger: [],
   guests: JSON.parse(JSON.stringify(DEFAULT_GUESTS)),
+  persons: JSON.parse(JSON.stringify(DEFAULT_PERSONS)),
+  eventDate: '2026-05-30',
+  eventDesc: '爸爸69岁生日',
+  eventName: '寿宴',
 };
 
 let saveTimer = null;
+
+function normalizeTasks() {
+  state.tasks.forEach(g => {
+    g.items.forEach(item => {
+      if (item.cost === undefined) item.cost = 0;
+      if (item.ledgerId === undefined) item.ledgerId = null;
+    });
+  });
+}
 
 async function loadRemote() {
   setSyncDot('ing');
   try {
     const res = await fetch(FB_URL);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
     if (data && data.tasks) {
-      state = Object.assign({tasks:DEFAULT_TASKS,ledger:[],guests:DEFAULT_GUESTS}, data);
+      state = {
+        tasks: data.tasks || DEFAULT_TASKS,
+        ledger: data.ledger || [],
+        guests: data.guests || DEFAULT_GUESTS,
+        persons: data.persons || DEFAULT_PERSONS,
+        eventDate: data.eventDate || '2026-05-30',
+        eventDesc: data.eventDesc || '爸爸69岁生日',
+        eventName: data.eventName || '寿宴',
+      };
     }
+    normalizeTasks();
     setSyncDot('ok');
   } catch(e) {
+    console.error(e);
     setSyncDot('err');
-    showToast('加载失败，使用本地数据');
+    showToast('加载云端失败，使用本地默认');
   }
   renderAll();
 }
@@ -257,15 +301,17 @@ async function loadRemote() {
 async function saveRemote() {
   setSyncDot('ing');
   try {
-    await fetch(FB_URL, {
+    const res = await fetch(FB_URL, {
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(state)
     });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     setSyncDot('ok');
   } catch(e) {
+    console.error(e);
     setSyncDot('err');
-    showToast('同步失败，请检查网络');
+    showToast('同步失败');
   }
 }
 
@@ -281,8 +327,9 @@ function setSyncDot(s) {
 }
 
 function switchTab(t) {
+  const tabs = ['overview', 'ledger', 'guests'];
   document.querySelectorAll('.tab').forEach((el,i)=>{
-    el.classList.toggle('active',['overview','tasks','ledger','guests'][i]===t);
+    el.classList.toggle('active', tabs[i] === t);
   });
   document.querySelectorAll('.section').forEach(el=>el.classList.remove('active'));
   document.getElementById('tab-'+t).classList.add('active');
@@ -291,50 +338,84 @@ function switchTab(t) {
 function renderAll() {
   countdown();
   renderOverview();
-  renderTasks();
   renderLedger();
   renderGuests();
+  updateHeaderSub();
+}
+
+function updateHeaderSub() {
+  const dateStr = formatDate(state.eventDate);
+  const totalGuests = state.guests.reduce((s,g)=>s+g.num, 0);
+  document.getElementById('h-sub').textContent = `${dateStr} · 共${totalGuests}人`;
 }
 
 function countdown() {
-  const target = new Date('2026-05-30T00:00:00');
+  const target = new Date(state.eventDate + 'T00:00:00');
   const now = new Date();
   const diff = Math.ceil((target - now) / (1000*60*60*24));
   document.getElementById('cd-days').textContent = diff > 0 ? diff : (diff === 0 ? '今天' : '已过');
+  document.getElementById('cd-target-date').textContent = formatDate(state.eventDate);
+  document.getElementById('cd-desc').textContent = '· ' + state.eventDesc;
+  document.getElementById('cd-event-name').textContent = state.eventName;
 }
 
-const PERSON_COLORS = {妥妥:'#1D9E75', 刘娟:'#7F77DD', 星星:'#D4537E'};
+function formatDate(dateStr) {
+  const [y,m,d] = dateStr.split('-');
+  return `${y}年${parseInt(m)}月${parseInt(d)}日`;
+}
 
-function renderOverview() {
+function updateStats() {
   let total=0, done=0;
   state.tasks.forEach(g=>{ total+=g.items.length; done+=g.items.filter(i=>i.done).length; });
-  document.getElementById('s-total').textContent = total;
-  document.getElementById('s-done').textContent = done;
-  const gTotal = state.guests.reduce((s,g)=>s+g.num, 0);
-  document.getElementById('s-guests').textContent = gTotal;
+  document.getElementById('s-progress').textContent = `${done} / ${total}`;
   const spend = state.ledger.filter(r=>r.type==='out').reduce((s,r)=>s+r.amount, 0);
   document.getElementById('s-spend').textContent = Math.round(spend).toLocaleString();
+  const gTotal = state.guests.reduce((s,g)=>s+g.num, 0);
+  document.getElementById('s-guests').textContent = gTotal;
+}
 
-  const persons = ['妥妥','刘娟','星星'];
+function startInlineEdit(el, value, onSave) {
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.value = value;
+  input.className = 'inline-edit-input';
+  el.innerHTML = '';
+  el.appendChild(input);
+  input.focus();
+  input.select();
+  const finish = () => {
+    const newVal = input.value.trim();
+    if (newVal && newVal !== value) {
+      onSave(newVal);
+    }
+    el.textContent = newVal || value;
+  };
+  input.addEventListener('blur', finish);
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') finish(); });
+}
+
+function renderOverview() {
+  updateStats();
+
   let html = '';
-  persons.forEach(p => {
-    const myGroups = state.tasks.filter(g => g.owner === p);
+  state.persons.forEach(p => {
+    const myGroups = state.tasks.filter(g => g.owner === p.name);
     let pt=0, pd=0;
     myGroups.forEach(g=>{ pt+=g.items.length; pd+=g.items.filter(i=>i.done).length; });
     const pct = pt ? Math.round(pd/pt*100) : 0;
-    const color = PERSON_COLORS[p];
 
     html += `<div class="card" style="margin-bottom:10px">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">
-        <span class="person-tag tag-${p}" style="font-size:13px;padding:3px 10px">${p}</span>
+        <span class="person-tag" style="font-size:13px;padding:3px 10px;background:${p.color}20;color:${p.color};border:1px solid ${p.color}40" ondblclick="editPersonName(this,'${p.name}')">${p.name}</span>
         <span style="font-size:12px;color:#aaa;margin-left:auto">${pd}/${pt} 项 · ${pct}%</span>
+        <button class="person-del" onclick="deletePerson('${p.name}')" title="删除负责人"><i class="ti ti-trash"></i></button>
       </div>
-      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${color}"></div></div>`;
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${p.color}"></div></div>`;
 
     myGroups.forEach(g => {
       const realGi = state.tasks.indexOf(g);
       html += `<div style="margin-bottom:6px">
-        <div class="group-label">${g.group}</div>`;
+        <div class="group-label" ondblclick="editGroupName(this,${realGi})">${g.group}</div>`;
       g.items.forEach((item, ii) => {
         const hasNote = item.note && item.note.trim();
         html += `<div class="task-row">
@@ -342,13 +423,20 @@ function renderOverview() {
             ${item.done?'<i class="ti ti-check" style="font-size:12px"></i>':''}
           </div>
           <div class="task-body">
-            <div class="task-title ${item.done?'done':''}">${item.title}</div>
-            <span class="note-toggle" onclick="toggleNoteOv(this)">${hasNote?'📝 '+item.note:'+ 备注'}</span>
-            <textarea class="task-note-input" rows="2" placeholder="添加备注..." oninput="updateNote(${realGi},${ii},this.value)">${item.note||''}</textarea>
+            <div class="task-title ${item.done?'done':''}" ondblclick="editTaskTitle(this,${realGi},${ii})">${item.title}</div>
+            <div class="task-meta">
+              <div class="task-cost">
+                <span>¥</span><input type="number" placeholder="0" value="${item.cost||''}" oninput="updateTaskCost(${realGi},${ii},this.value)" onclick="event.stopPropagation()">
+                <span class="clear-cost" onclick="clearTaskCost(${realGi},${ii},this)" title="清空金额">✕</span>
+              </div>
+              <span class="note-toggle" onclick="toggleNoteOv(this)">${hasNote?'📝':'💬'}</span>
+              <textarea class="task-note-input" rows="2" placeholder="添加备注..." oninput="updateNote(${realGi},${ii},this.value)">${item.note||''}</textarea>
+            </div>
           </div>
           <button class="del-btn" onclick="delTask(${realGi},${ii})"><i class="ti ti-x"></i></button>
         </div>`;
       });
+      html += `<div class="add-task-inline" onclick="addTaskInline(${realGi})"><i class="ti ti-plus"></i> 添加任务</div>`;
       html += `</div>`;
     });
     html += `</div>`;
@@ -359,39 +447,54 @@ function renderOverview() {
 function toggleNoteOv(el) {
   const ta = el.nextElementSibling;
   const show = ta.classList.toggle('show');
-  if (show) { ta.focus(); el.textContent = '收起'; }
-  else { el.textContent = ta.value.trim() ? '📝 '+ta.value.trim() : '+ 备注'; }
+  if (show) { ta.focus(); el.textContent = '📝'; }
+  else { el.textContent = ta.value.trim() ? '📝' : '💬'; }
 }
 
-function renderTasks() {
-  let html = '';
-  state.tasks.forEach((g, gi) => {
-    const done = g.items.filter(i=>i.done).length;
-    const pct = g.items.length ? Math.round(done/g.items.length*100) : 0;
-    html += `<div class="card">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">
-        <span style="font-size:14px;font-weight:500">${g.group}</span>
-        <span class="person-tag tag-${g.owner}">${g.owner}</span>
-        <span style="margin-left:auto;font-size:12px;color:#aaa">${done}/${g.items.length}</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>`;
-    g.items.forEach((item, ii) => {
-      const hasNote = item.note && item.note.trim();
-      html += `<div class="task-row">
-        <div class="chk ${item.done?'done':''}" onclick="toggleTask(${gi},${ii})">
-          ${item.done?'<i class="ti ti-check" style="font-size:12px"></i>':''}
-        </div>
-        <div class="task-body">
-          <div class="task-title ${item.done?'done':''}">${item.title}</div>
-          <span class="note-toggle" onclick="toggleNoteOv(this)">${hasNote?'📝 '+item.note:'+ 备注'}</span>
-          <textarea class="task-note-input" rows="2" placeholder="添加备注..." oninput="updateNote(${gi},${ii},this.value)">${item.note||''}</textarea>
-        </div>
-        <button class="del-btn" onclick="delTask(${gi},${ii})"><i class="ti ti-x"></i></button>
-      </div>`;
-    });
-    html += `</div>`;
-  });
-  document.getElementById('task-groups').innerHTML = html;
+function clearTaskCost(gi, ii, el) {
+  event.stopPropagation();
+  const input = el.parentElement.querySelector('input');
+  input.value = '';
+  updateTaskCost(gi, ii, '');
+}
+
+function updateTaskCost(gi, ii, value) {
+  const num = parseFloat(value);
+  const item = state.tasks[gi].items[ii];
+  const oldCost = item.cost || 0;
+  const newCost = isNaN(num) || num < 0 ? 0 : num;
+  item.cost = newCost;
+  if (newCost === 0 && oldCost === 0) return scheduleSave();
+  const owner = state.tasks[gi].owner;
+  if (item.ledgerId) {
+    const record = state.ledger.find(r => r.id === item.ledgerId);
+    if (record) {
+      if (newCost === 0) {
+        state.ledger = state.ledger.filter(r => r.id !== item.ledgerId);
+        item.ledgerId = null;
+      } else {
+        record.amount = newCost;
+        record.desc = item.title;
+        record.who = owner;
+      }
+    } else {
+      item.ledgerId = null;
+    }
+  }
+  if (!item.ledgerId && newCost > 0) {
+    const record = {
+      id: 'task_' + item.id,
+      desc: item.title,
+      amount: newCost,
+      who: owner,
+      type: 'out'
+    };
+    state.ledger.push(record);
+    item.ledgerId = record.id;
+  }
+  updateStats();
+  renderLedger();
+  scheduleSave();
 }
 
 function renderLedger() {
@@ -399,7 +502,7 @@ function renderLedger() {
   if (!state.ledger.length) {
     el.innerHTML='<div class="empty">暂无记录</div>';
     document.getElementById('l-total').textContent='0 元';
-    document.getElementById('s-spend').textContent='0';
+    renderSettlement();
     return;
   }
   let total = 0;
@@ -407,14 +510,79 @@ function renderLedger() {
     const isOut = r.type==='out';
     if(isOut) total += r.amount;
     return `<div class="ledger-row">
-      <span style="flex:1">${r.desc}</span>
-      <span class="person-tag tag-${r.who}" style="font-size:11px">${r.who}</span>
+      <span style="flex:1">${r.desc} ${r.id && r.id.startsWith('task_') ? '<span style="font-size:10px;color:#BA7517">📋</span>' : ''}</span>
+      <span class="person-tag" style="font-size:11px">${r.who}</span>
       <span class="${isOut?'amount-out':'amount-in'}">${isOut?'-':'+'}${Math.round(r.amount).toLocaleString()} 元</span>
       <button class="del-btn" onclick="delLedger(${i})"><i class="ti ti-x"></i></button>
     </div>`;
   }).join('');
   document.getElementById('l-total').textContent = Math.round(total).toLocaleString() + ' 元';
-  document.getElementById('s-spend').textContent = Math.round(total).toLocaleString();
+  document.getElementById('l-who').innerHTML = state.persons.map(p => `<option>${p.name}</option>`).join('') + '<option>共同</option>';
+  renderSettlement();
+}
+
+function renderSettlement() {
+  const persons = state.persons.map(p=>p.name);
+  const payments = {};
+  persons.forEach(p => payments[p] = 0);
+  state.ledger.forEach(r => {
+    if (r.type === 'out' && persons.includes(r.who)) {
+      payments[r.who] += r.amount;
+    }
+  });
+  const totalPaid = Object.values(payments).reduce((a,b)=>a+b,0);
+  const perPerson = totalPaid / persons.length;
+  const diffs = {};
+  persons.forEach(p => diffs[p] = payments[p] - perPerson);
+
+  let settlementHtml = '';
+  if (totalPaid === 0) {
+    settlementHtml = '<div class="empty">暂无个人支出</div>';
+  } else {
+    const debtors = [], creditors = [];
+    persons.forEach(p => {
+      const d = Math.round(diffs[p] * 100) / 100;
+      if (d < -0.01) debtors.push({name: p, amount: -d});
+      else if (d > 0.01) creditors.push({name: p, amount: d});
+    });
+    if (debtors.length === 0 && creditors.length === 0) {
+      settlementHtml += '<div style="font-size:13px;color:#1D9E75;padding:8px 0">✅ 已平账，无需结算</div>';
+    }
+    // 获取颜色函数
+    const getPersonColor = (name) => {
+      const person = state.persons.find(p => p.name === name);
+      return person ? person.color : '#aaa';
+    };
+    while (debtors.length && creditors.length) {
+      const debtor = debtors[0], creditor = creditors[0];
+      const amount = Math.min(debtor.amount, creditor.amount);
+      const debtorColor = getPersonColor(debtor.name);
+      const creditorColor = getPersonColor(creditor.name);
+      settlementHtml += `<div class="settlement-item">
+        <span class="person-tag" style="background:${debtorColor}20;color:${debtorColor};border:1px solid ${debtorColor}40">${debtor.name}</span>
+        <span style="color:#888">需支付</span>
+        <span class="person-tag" style="background:${creditorColor}20;color:${creditorColor};border:1px solid ${creditorColor}40">${creditor.name}</span>
+        <span style="font-weight:500;color:#A32D2D">¥${Math.round(amount*100)/100}</span>
+      </div>`;
+      debtor.amount = Math.round((debtor.amount - amount) * 100) / 100;
+      creditor.amount = Math.round((creditor.amount - amount) * 100) / 100;
+      if (debtor.amount < 0.01) debtors.shift();
+      if (creditor.amount < 0.01) creditors.shift();
+    }
+  }
+  let summaryHtml = '<div style="margin-top:10px;border-top:0.5px solid #f0ebe3;padding-top:8px;font-size:12px;color:#888">';
+  persons.forEach(p => {
+    const paid = Math.round(payments[p]*100)/100;
+    const diff = Math.round(diffs[p]*100)/100;
+    const color = state.persons.find(ps=>ps.name===p)?.color || '#aaa';
+    summaryHtml += `<div style="display:flex;justify-content:space-between;margin-bottom:4px">
+      <span style="color:${color}">${p}</span>
+      <span>已付 ¥${paid}</span>
+      <span style="color:${diff>=0?'#1D9E75':'#A32D2D'}">${diff>=0?'多付':'应付'} ¥${Math.abs(diff)}</span>
+    </div>`;
+  });
+  summaryHtml += '</div>';
+  document.getElementById('settlement-content').innerHTML = settlementHtml + summaryHtml;
 }
 
 function renderGuests() {
@@ -423,49 +591,120 @@ function renderGuests() {
   document.getElementById("s-guests").textContent = total;
   document.getElementById("guest-list").innerHTML = state.guests.map((g,i)=>`
     <div class="guest-row">
-      <span style="flex:1">${g.name}</span>
-      <div style="display:flex;align-items:center;gap:4px">
-        <button onclick="changeGuestNum(${i},-1)" style="width:22px;height:22px;border-radius:50%;border:0.5px solid #d8d0c8;background:#f5f0ea;cursor:pointer;font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center;color:#666">−</button>
-        <span style="min-width:24px;text-align:center;font-size:13px;font-weight:500">${g.num}</span>
-        <button onclick="changeGuestNum(${i},1)" style="width:22px;height:22px;border-radius:50%;border:0.5px solid #d8d0c8;background:#f5f0ea;cursor:pointer;font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center;color:#666">+</button>
-        <span style="color:#aaa;font-size:12px">人</span>
-      </div>
+      <span style="flex:1;cursor:pointer" ondblclick="editGuestName(${i}, this)">${g.name}</span>
+      <button class="guest-btn" onclick="changeGuestNum(${i},-1)">−</button>
+      <span style="min-width:24px;text-align:center;font-weight:500">${g.num}</span>
+      <button class="guest-btn" onclick="changeGuestNum(${i},1)">+</button>
+      <span style="color:#aaa;font-size:12px">人</span>
       <button class="del-btn" onclick="delGuest(${i})"><i class="ti ti-x"></i></button>
     </div>`).join("");
 }
 
-function changeGuestNum(i, delta) {
-  const newNum = state.guests[i].num + delta;
-  if (newNum < 1) return;
-  state.guests[i].num = newNum;
-  renderGuests();
+function editGuestName(i, el) {
+  startInlineEdit(el, state.guests[i].name, (newName) => {
+    state.guests[i].name = newName;
+    renderGuests();
+    scheduleSave();
+  });
+}
+
+function toggleTask(gi,ii){
+  state.tasks[gi].items[ii].done = !state.tasks[gi].items[ii].done;
+  renderOverview();
+  scheduleSave();
+}
+function updateNote(gi,ii,v){ state.tasks[gi].items[ii].note=v; scheduleSave(); }
+
+function delTask(gi,ii){
+  const item = state.tasks[gi].items[ii];
+  if (item.ledgerId) state.ledger = state.ledger.filter(r => r.id !== item.ledgerId);
+  state.tasks[gi].items.splice(ii,1);
+  renderOverview();
+  renderLedger();
+  scheduleSave();
+}
+
+function editPersonName(el, oldName) {
+  startInlineEdit(el, oldName, (newName) => {
+    const person = state.persons.find(p => p.name === oldName);
+    if (person && !state.persons.some(p => p.name === newName)) {
+      person.name = newName;
+      state.tasks.forEach(g => { if (g.owner === oldName) g.owner = newName; });
+      state.ledger.forEach(r => { if (r.who === oldName) r.who = newName; });
+      renderOverview();
+      renderLedger();
+      scheduleSave();
+    }
+  });
+}
+
+function editGroupName(el, gi) {
+  const group = state.tasks[gi];
+  startInlineEdit(el, group.group, (newName) => {
+    group.group = newName;
+    renderOverview();
+    scheduleSave();
+  });
+}
+
+function editTaskTitle(el, gi, ii) {
+  const item = state.tasks[gi].items[ii];
+  startInlineEdit(el, item.title, (newTitle) => {
+    item.title = newTitle;
+    if (item.ledgerId) {
+      const record = state.ledger.find(r => r.id === item.ledgerId);
+      if (record) record.desc = newTitle;
+    }
+    renderOverview();
+    renderLedger();
+    scheduleSave();
+  });
+}
+
+function addTaskInline(gi) {
+  const newItem = {id:'c'+Date.now(), title:'新任务', done:false, note:'', cost:0, ledgerId:null};
+  state.tasks[gi].items.push(newItem);
   renderOverview();
   scheduleSave();
 }
 
-function toggleTask(gi,ii){ state.tasks[gi].items[ii].done=!state.tasks[gi].items[ii].done; renderTasks(); renderOverview(); scheduleSave(); }
-function updateNote(gi,ii,v){ state.tasks[gi].items[ii].note=v; scheduleSave(); }
-function delTask(gi,ii){ state.tasks[gi].items.splice(ii,1); renderTasks(); renderOverview(); scheduleSave(); }
+function addPerson() {
+  const colors = ['#1D9E75','#7F77DD','#D4537E','#E67E22','#2980B9','#8E44AD'];
+  const newName = '新成员';
+  const color = colors[state.persons.length % colors.length];
+  state.persons.push({name: newName, color});
+  state.tasks.push({group:'新分组', owner: newName, items:[]});
+  renderOverview();
+  scheduleSave();
+  setTimeout(() => {
+    const tags = document.querySelectorAll('#overview-persons .person-tag');
+    const lastTag = tags[tags.length-1];
+    if (lastTag && lastTag.textContent === newName) {
+      lastTag.dispatchEvent(new Event('dblclick'));
+    }
+  }, 100);
+}
 
-function openAddTask() {
-  const sel = document.getElementById('at-group');
-  sel.innerHTML = state.tasks.map((g,i)=>`<option value="${i}">${g.group}（${g.owner}）</option>`).join('');
-  document.getElementById('at-title').value='';
-  document.getElementById('modal-add-task').classList.add('show');
+function deletePerson(name) {
+  if (!confirm(`确定删除负责人“${name}”及其所有任务和记账记录吗？`)) return;
+  state.persons = state.persons.filter(p => p.name !== name);
+  state.tasks = state.tasks.filter(g => g.owner !== name);
+  state.ledger = state.ledger.filter(r => r.who !== name);
+  renderOverview();
+  renderLedger();
+  scheduleSave();
 }
-function closeModal(){ document.getElementById('modal-add-task').classList.remove('show'); }
-function confirmAddTask(){
-  const title = document.getElementById('at-title').value.trim();
-  if(!title){ showToast('请填写任务名称'); return; }
-  const gi = parseInt(document.getElementById('at-group').value);
-  state.tasks[gi].items.push({id:'c'+Date.now(),title,done:false,note:''});
-  closeModal(); renderTasks(); renderOverview(); scheduleSave();
-}
+
 function resetData(){
-  if(!confirm("确定重置任务列表？这会清除所有自定义任务和已完成状态。")) return;
+  if(!confirm("确定重置？这会清除自定义内容。")) return;
   state.tasks = JSON.parse(JSON.stringify(DEFAULT_TASKS));
-  renderTasks(); renderOverview(); scheduleSave();
-  showToast("已重置为默认任务列表");
+  state.ledger = state.ledger.filter(r => !r.id || !r.id.startsWith('task_'));
+  state.persons = JSON.parse(JSON.stringify(DEFAULT_PERSONS));
+  renderOverview();
+  renderLedger();
+  updateHeaderSub();
+  scheduleSave();
+  showToast("已重置");
 }
 
 function addLedger(){
@@ -474,11 +713,29 @@ function addLedger(){
   if(!desc||isNaN(amount)||amount<=0){ showToast('请填写项目和金额'); return; }
   const who=document.getElementById('l-who').value;
   const type=document.getElementById('l-type').value;
-  state.ledger.push({desc,amount,who,type});
+  state.ledger.push({id:'m'+Date.now(), desc, amount, who, type});
   document.getElementById('l-desc').value=''; document.getElementById('l-amount').value='';
-  renderLedger(); renderOverview(); scheduleSave();
+  renderLedger();
+  updateStats();
+  scheduleSave();
 }
-function delLedger(i){ state.ledger.splice(i,1); renderLedger(); renderOverview(); scheduleSave(); }
+function delLedger(i){
+  const record = state.ledger[i];
+  if (record.id && record.id.startsWith('task_')) {
+    state.tasks.forEach(g => {
+      g.items.forEach(item => {
+        if (item.ledgerId === record.id) {
+          item.cost = 0;
+          item.ledgerId = null;
+        }
+      });
+    });
+  }
+  state.ledger.splice(i,1);
+  renderLedger();
+  renderOverview();
+  scheduleSave();
+}
 
 function addGuest(){
   const name=document.getElementById('g-name').value.trim();
@@ -486,16 +743,98 @@ function addGuest(){
   if(!name){ showToast('请填写姓名'); return; }
   state.guests.push({name,num});
   document.getElementById('g-name').value=''; document.getElementById('g-num').value='1';
-  renderGuests(); renderOverview(); scheduleSave();
+  renderGuests();
+  updateStats();
+  updateHeaderSub();
+  scheduleSave();
 }
-function delGuest(i){ state.guests.splice(i,1); renderGuests(); renderOverview(); scheduleSave(); }
+function delGuest(i){
+  state.guests.splice(i,1);
+  renderGuests();
+  updateStats();
+  updateHeaderSub();
+  scheduleSave();
+}
+function changeGuestNum(i, delta) {
+  const newNum = state.guests[i].num + delta;
+  if (newNum < 1) return;
+  state.guests[i].num = newNum;
+  renderGuests();
+  updateStats();
+  updateHeaderSub();
+  scheduleSave();
+}
+
+// 倒计时编辑
+function editTargetDate() {
+  const cur = state.eventDate;
+  const span = document.getElementById('cd-target-date');
+  const input = document.createElement('input');
+  input.type = 'date';
+  input.value = cur;
+  input.className = 'inline-edit-input';
+  span.innerHTML = '';
+  span.appendChild(input);
+  input.focus();
+  input.addEventListener('blur', () => {
+    const newVal = input.value;
+    if (newVal && newVal !== cur) {
+      state.eventDate = newVal;
+      countdown();
+      updateHeaderSub();
+      scheduleSave();
+    }
+    span.textContent = formatDate(state.eventDate);
+  });
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') input.blur(); });
+}
+
+function editEventDesc() {
+  const span = document.getElementById('cd-desc');
+  const cur = state.eventDesc;
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.value = cur;
+  input.className = 'inline-edit-input';
+  span.innerHTML = '';
+  span.appendChild(input);
+  input.focus();
+  input.addEventListener('blur', () => {
+    const newVal = input.value.trim() || cur;
+    if (newVal !== cur) {
+      state.eventDesc = newVal;
+      countdown();
+      scheduleSave();
+    }
+    span.textContent = '· ' + state.eventDesc;
+  });
+}
+
+function editEventName() {
+  const span = document.getElementById('cd-event-name');
+  const cur = state.eventName;
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.value = cur;
+  input.className = 'inline-edit-input';
+  span.innerHTML = '';
+  span.appendChild(input);
+  input.focus();
+  input.addEventListener('blur', () => {
+    const newVal = input.value.trim() || cur;
+    if (newVal !== cur) {
+      state.eventName = newVal;
+      countdown();
+      scheduleSave();
+    }
+    span.textContent = state.eventName;
+  });
+}
 
 function showToast(msg){
   const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2200);
 }
-
-document.getElementById('modal-add-task').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
 
 loadRemote();
 setInterval(countdown, 60000);
