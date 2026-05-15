@@ -238,13 +238,13 @@ let state = {
   guests: JSON.parse(JSON.stringify(DEFAULT_GUESTS)),
 };
 
-let binId = localStorage.getItem(BIN_ID_KEY) || null;
+let binId = '6a06d206adc21f119aa2ab1b';
 let saveTimer = null;
 
 async function loadRemote() {
   setSyncDot('ing');
   try {
-    if (!binId) {
+    if (false) {
       const res = await fetch(`${BASE_URL}/b`, {
         method:'POST',
         headers:{'Content-Type':'application/json','X-Master-Key':API_KEY,'X-Bin-Name':'banquet69','X-Bin-Private':'false'},
