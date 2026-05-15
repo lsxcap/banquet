@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>69岁生日宴</title>
+<title>我们的记账</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.10.0/dist/tabler-icons.min.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -12,7 +12,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans G
 .header{background:#fff;border-bottom:0.5px solid #e8e0d8;padding:16px 20px 0;position:sticky;top:0;z-index:100}
 .header-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
 .h-icon{width:36px;height:36px;border-radius:50%;background:#FAEEDA;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.h-title{font-size:17px;font-weight:600}
+.h-title{font-size:17px;font-weight:600;cursor:pointer}
 .h-sub{font-size:12px;color:#888;margin-top:1px}
 .sync-dot{width:7px;height:7px;border-radius:50%;background:#ccc;margin-left:auto;flex-shrink:0;transition:background .3s}
 .sync-dot.ok{background:#1D9E75}
@@ -43,7 +43,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans G
 .tag-共同{background:#F1EFE8;color:#444441}
 .progress-bar{height:4px;background:#f0ebe3;border-radius:2px;margin:6px 0 10px;overflow:hidden}
 .progress-fill{height:100%;background:#1D9E75;border-radius:2px;transition:width .4s}
-.task-row{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:0.5px solid #f5f0ea}
+.task-row{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:none}
 .task-row:last-child{border-bottom:none}
 .chk{width:20px;height:20px;border-radius:6px;border:1.5px solid #d0c8be;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .15s;color:#fff}
 .chk.done{background:#1D9E75;border-color:#1D9E75}
@@ -70,22 +70,50 @@ input[type=number] {
   width:18px;
   height:18px;
   border-radius:50%;
-  background:#f0ebe3;
-  color:#888;
-  font-size:10px;
+  background:transparent;
+  color:#ccc;
+  font-size:12px;
   cursor:pointer;
   margin-left:2px;
   user-select:none;
-  transition:background .2s;
+  transition:color .2s;
 }
-.clear-cost:hover{background:#E24B4A;color:#fff}
+.clear-cost:hover{color:#E24B4A}
 .note-toggle{font-size:11px;color:#BA7517;cursor:pointer;display:inline-flex;align-items:center;gap:2px;user-select:none;margin-left:4px}
 .task-note-input{width:100%;margin-top:5px;border:0.5px solid #e0d8d0;border-radius:7px;padding:5px 8px;font-size:12px;color:#666;font-family:inherit;background:#FFFCF8;resize:none;outline:none;display:none}
 .task-note-input.show{display:block}
 .task-note-input:focus{border-color:#BA7517}
-.del-btn{background:none;border:none;cursor:pointer;color:#ccc;padding:2px 4px;border-radius:4px;font-size:14px;flex-shrink:0}
-.del-btn:hover{color:#E24B4A;background:#FCEBEB}
-.add-task-inline{display:flex;align-items:center;gap:4px;color:#aaa;font-size:12px;cursor:pointer;padding:4px 0;user-select:none}
+.del-btn{
+  background:#f0ebe3;
+  border:none;
+  cursor:pointer;
+  color:#888;
+  padding:2px 4px;
+  border-radius:50%;
+  width:22px;
+  height:22px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:14px;
+  flex-shrink:0;
+  transition:background .2s, color .2s;
+}
+.del-btn:hover{
+  background:#E24B4A;
+  color:#fff;
+}
+.add-task-inline{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  color:#aaa;
+  font-size:12px;
+  cursor:pointer;
+  padding:8px 0 4px;
+  user-select:none;
+  border-top:0.5px solid #f5f0ea;
+}
 .add-task-inline:hover{color:#BA7517}
 .person-del{background:none;border:none;color:#ccc;cursor:pointer;padding:2px;margin-left:4px;display:inline-flex;align-items:center}
 .person-del:hover{color:#E24B4A}
@@ -111,7 +139,6 @@ textarea{resize:vertical;min-height:80px;width:100%}
 .toast.show{opacity:1}
 .empty{color:#bbb;font-size:13px;text-align:center;padding:20px 0}
 .group-label{font-size:12px;color:#aaa;margin-bottom:4px;padding-left:2px;cursor:pointer}
-/* 宾客加减按钮纯色风格 */
 .guest-btn{
   width:22px;height:22px;border-radius:50%;
   background:#f0ebe3;border:none;color:#666;
@@ -128,7 +155,7 @@ textarea{resize:vertical;min-height:80px;width:100%}
     <div class="header-top">
       <div class="h-icon">🎂</div>
       <div>
-        <div class="h-title">69岁生日宴</div>
+        <div class="h-title" id="main-title" ondblclick="editMainTitle()">69岁生日宴</div>
         <div class="h-sub" id="h-sub">2026年5月30日 · 共30人</div>
       </div>
       <div class="sync-dot" id="sync-dot" title="同步状态"></div>
@@ -140,14 +167,13 @@ textarea{resize:vertical;min-height:80px;width:100%}
     </div>
   </div>
 
-  <!-- 概览 -->
   <div class="section active" id="tab-overview">
     <div class="countdown">
       <div class="cd-num" id="cd-days">--</div>
       <div class="cd-label">距离<span class="editable" id="cd-event-name" onclick="editEventName()">寿宴</span>还有（天）</div>
       <div class="cd-date">
         <span class="editable" id="cd-target-date" onclick="editTargetDate()">2026年5月30日</span>
-        <span class="editable" id="cd-desc" onclick="editEventDesc()">· 爸爸69岁生日</span>
+        <span class="editable" id="cd-desc" onclick="editEventDesc()">· 椿萱同欢・晴光入宴</span>
       </div>
     </div>
     <div class="stat-grid">
@@ -162,7 +188,6 @@ textarea{resize:vertical;min-height:80px;width:100%}
     </div>
   </div>
 
-  <!-- 记账 -->
   <div class="section" id="tab-ledger">
     <div style="height:12px"></div>
     <div class="card">
@@ -193,7 +218,6 @@ textarea{resize:vertical;min-height:80px;width:100%}
     </div>
   </div>
 
-  <!-- 宾客 -->
   <div class="section" id="tab-guests">
     <div style="height:12px"></div>
     <div class="card">
@@ -256,8 +280,9 @@ let state = {
   guests: JSON.parse(JSON.stringify(DEFAULT_GUESTS)),
   persons: JSON.parse(JSON.stringify(DEFAULT_PERSONS)),
   eventDate: '2026-05-30',
-  eventDesc: '爸爸69岁生日',
+  eventDesc: '椿萱同欢・晴光入宴',
   eventName: '寿宴',
+  mainTitle: '69岁生日宴',
 };
 
 let saveTimer = null;
@@ -284,8 +309,9 @@ async function loadRemote() {
         guests: data.guests || DEFAULT_GUESTS,
         persons: data.persons || DEFAULT_PERSONS,
         eventDate: data.eventDate || '2026-05-30',
-        eventDesc: data.eventDesc || '爸爸69岁生日',
+        eventDesc: data.eventDesc || '椿萱同欢・晴光入宴',
         eventName: data.eventName || '寿宴',
+        mainTitle: data.mainTitle || '69岁生日宴',
       };
     }
     normalizeTasks();
@@ -336,11 +362,17 @@ function switchTab(t) {
 }
 
 function renderAll() {
+  updateMainTitle();
   countdown();
   renderOverview();
   renderLedger();
   renderGuests();
   updateHeaderSub();
+}
+
+function updateMainTitle() {
+  document.getElementById('main-title').textContent = state.mainTitle;
+  document.title = state.mainTitle;
 }
 
 function updateHeaderSub() {
@@ -404,7 +436,7 @@ function renderOverview() {
     myGroups.forEach(g=>{ pt+=g.items.length; pd+=g.items.filter(i=>i.done).length; });
     const pct = pt ? Math.round(pd/pt*100) : 0;
 
-    html += `<div class="card" style="margin-bottom:10px">
+    html += `<div class="card" style="margin:0 0 10px">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">
         <span class="person-tag" style="font-size:13px;padding:3px 10px;background:${p.color}20;color:${p.color};border:1px solid ${p.color}40" ondblclick="editPersonName(this,'${p.name}')">${p.name}</span>
         <span style="font-size:12px;color:#aaa;margin-left:auto">${pd}/${pt} 项 · ${pct}%</span>
@@ -548,7 +580,6 @@ function renderSettlement() {
     if (debtors.length === 0 && creditors.length === 0) {
       settlementHtml += '<div style="font-size:13px;color:#1D9E75;padding:8px 0">✅ 已平账，无需结算</div>';
     }
-    // 获取颜色函数
     const getPersonColor = (name) => {
       const person = state.persons.find(p => p.name === name);
       return person ? person.color : '#aaa';
@@ -596,7 +627,7 @@ function renderGuests() {
       <span style="min-width:24px;text-align:center;font-weight:500">${g.num}</span>
       <button class="guest-btn" onclick="changeGuestNum(${i},1)">+</button>
       <span style="color:#aaa;font-size:12px">人</span>
-      <button class="del-btn" onclick="delGuest(${i})"><i class="ti ti-x"></i></button>
+      <button class="person-del" onclick="delGuest(${i})"><i class="ti ti-trash"></i></button>
     </div>`).join("");
 }
 
@@ -765,7 +796,15 @@ function changeGuestNum(i, delta) {
   scheduleSave();
 }
 
-// 倒计时编辑
+function editMainTitle() {
+  const el = document.getElementById('main-title');
+  startInlineEdit(el, state.mainTitle, (newTitle) => {
+    state.mainTitle = newTitle;
+    updateMainTitle();
+    scheduleSave();
+  });
+}
+
 function editTargetDate() {
   const cur = state.eventDate;
   const span = document.getElementById('cd-target-date');
