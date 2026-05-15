@@ -196,9 +196,7 @@ textarea{resize:vertical;min-height:80px;width:100%}
 <div class="toast" id="toast"></div>
 
 <script>
-const BIN_ID_KEY = 'banquet_bin_id';
-const API_KEY = '$2a$10$MjjZl03Z83bbIAiR/s4gaezlxBIJuxYEwOSM/L/p4giJ6tX8yzslK';
-const BASE_URL = 'https://api.jsonbin.io/v3';
+const FB_URL = 'https://banquet-c03ba-default-rtdb.asia-southeast1.firebasedatabase.app/data.json';
 
 const DEFAULT_TASKS = [
   {group:'酒店对接',owner:'妥妥',items:[
@@ -238,32 +236,17 @@ let state = {
   guests: JSON.parse(JSON.stringify(DEFAULT_GUESTS)),
 };
 
-let binId = '6a06d206adc21f119aa2ab1b';
 let saveTimer = null;
 
 async function loadRemote() {
   setSyncDot('ing');
   try {
-    if (false) {
-      const res = await fetch(`${BASE_URL}/b`, {
-        method:'POST',
-        headers:{'Content-Type':'application/json','X-Master-Key':API_KEY,'X-Bin-Name':'banquet69','X-Bin-Private':'false'},
-        body: JSON.stringify(state)
-      });
-      const data = await res.json();
-      binId = data.metadata.id;
-      localStorage.setItem(BIN_ID_KEY, binId);
-      setSyncDot('ok');
-    } else {
-      const res = await fetch(`${BASE_URL}/b/${binId}/latest`, {
-        headers:{'X-Master-Key':API_KEY}
-      });
-      const data = await res.json();
-      if (data.record) {
-        state = Object.assign({tasks:DEFAULT_TASKS,ledger:[],guests:DEFAULT_GUESTS}, data.record);
-      }
-      setSyncDot('ok');
+    const res = await fetch(FB_URL);
+    const data = await res.json();
+    if (data && data.tasks) {
+      state = Object.assign({tasks:DEFAULT_TASKS,ledger:[],guests:DEFAULT_GUESTS}, data);
     }
+    setSyncDot('ok');
   } catch(e) {
     setSyncDot('err');
     showToast('加载失败，使用本地数据');
@@ -274,9 +257,9 @@ async function loadRemote() {
 async function saveRemote() {
   setSyncDot('ing');
   try {
-    await fetch(`${BASE_URL}/b/${binId}`, {
-      method:'PUT',
-      headers:{'Content-Type':'application/json','X-Master-Key':API_KEY},
+    await fetch(FB_URL, {
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(state)
     });
     setSyncDot('ok');
